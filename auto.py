@@ -4,10 +4,12 @@ import time
 from numbers import Number
 from typing import Callable, Optional, Union, Tuple, List
 
+from stopit import threading_timeoutable
+
 from drives import Driver
 from utils import CVUtils
-from utils.DelayUtils import MoodDelay
 from utils.ImageUtils import CvImage
+from utils.DelayUtils import MoodDelay
 from utils.PosUtils import Pos, Scope
 
 
@@ -234,6 +236,24 @@ class Auto:
             else:
                 # 未超时则进行下次循环
                 time.sleep(interval)
+
+    @threading_timeoutable(default=False)
+    def wait_quick(self, target: CvImage, interval: float = 0.5):
+        """
+        等待直到寻找到目标
+        该方法与 wait 方法的区别是该方法到达 timeout 指定的时间后会立即退出,而 wait 还需要执行到判断是否超时处才会退出
+        :param target: 寻找的目标
+        :param interval: 间隔时间,每次检测等待的时间
+        :return: 是否在超时时间内匹配到目标
+        """
+        while True:
+            # 截图
+            self.driver.screenshot()
+            # 匹配
+            if self.match(target):
+                return True
+            # 间隔
+            time.sleep(interval)
 
 
 class AutoDebug(Auto, Debug):
