@@ -5,7 +5,7 @@ from subprocess import Popen
 from drives.AdbDriver import AdbDriver
 from settings import LIBS_PATH
 from utils.ImageUtils import bytes2cv
-from utils.STFUtils.minicap import MinicapStream
+from utils.MiniCapUtils import MinicapStream
 
 
 class MiniDriver(AdbDriver):
